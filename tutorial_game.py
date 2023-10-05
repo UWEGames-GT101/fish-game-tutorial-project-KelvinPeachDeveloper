@@ -1,3 +1,4 @@
+import math
 import random
 import pyasge
 from gamedata import GameData
@@ -56,6 +57,10 @@ class MyASGEGame(pyasge.ASGEGame):
         self.scoreboard = None
         self.initScoreboard()
 
+        # These will be randomised in initFish()
+        self.movementDirection = 0
+        self.moveSpeed = 1
+
         # This is a comment
         self.fish = pyasge.Sprite()
         self.initFish()
@@ -90,7 +95,7 @@ class MyASGEGame(pyasge.ASGEGame):
         # This option starts the game
         self.data.fonts["MainFont"] = self.data.renderer.loadFont("/data/fonts/KGHAPPY.ttf", 64)
         self.menu_text = pyasge.Text(self.data.fonts["MainFont"])
-        self.menu_text.string = "Fish Simulator 2023"
+        self.menu_text.string = "Fish Clicking Simulator 2023"
         self.menu_text.position = [100, 100]
         self.menu_text.colour = pyasge.COLOURS.HOTPINK
 
@@ -150,6 +155,12 @@ class MyASGEGame(pyasge.ASGEGame):
         x = random.randint(0, self.data.game_res[0] - self.fish.width)
         y = random.randint(0, self.data.game_res[1] - self.fish.height)
 
+        # Move faster as the player scores more to make the game harder
+        # The maximum speed is capped at 30 using the min function
+        self.moveSpeed = min(1 + (self.data.score * 2), 30)
+        # Start moving left (0) or right (1)
+        self.movementDirection = random.randrange(0, 2)
+
         self.fish.x = x
         self.fish.y = y
 
@@ -165,6 +176,9 @@ class MyASGEGame(pyasge.ASGEGame):
         else:
             # update the game here
             self.data.renderer.render(self.fish)
+
+            # Fish movement
+            fishMovement(self)
 
     def render(self, game_time: pyasge.GameTime) -> None:
         """
@@ -184,6 +198,23 @@ class MyASGEGame(pyasge.ASGEGame):
             self.data.renderer.render(self.scoreboard)
             self.data.renderer.render(self.fish)
 
+def fishMovement(self):
+    # Movement
+    # Should we move left?
+    if self.movementDirection == 0:
+        self.fish.x -= self.moveSpeed
+
+        # Has the fish reached the left side of the screen?
+        if (self.fish.x < 0):
+            self.movementDirection = 1
+    # No? Then move right!
+    else:
+        self.fish.x += self.moveSpeed
+
+        # Has the fish reached the right side of the screen?
+        if (self.fish.x > self.data.game_res[0] - self.fish.width):
+            # Set movement direction to left
+            self.movementDirection = 0
 
 def main():
     """
@@ -201,9 +232,9 @@ def main():
     settings.fps_limit = 60
     settings.window_mode = pyasge.WindowMode.BORDERLESS_WINDOW
     settings.vsync = pyasge.Vsync.ADAPTIVE
+    settings.window_title = "Fish Clicking Simulator 2023"
     game = MyASGEGame(settings)
     game.run()
-
 
 if __name__ == "__main__":
     main()
