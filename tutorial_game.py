@@ -74,7 +74,9 @@ class MyASGEGame(pyasge.ASGEGame):
             return False
 
     def initFish(self) -> bool:
-        if self.fish.loadTexture("/data/images/kenney_fishpack/fishTile_073.png"):
+
+        # Load a random fish image
+        if self.fish.loadTexture(randomFishTexture(self)):
             self.fish.z_order = 1
             self.fish.scale = 1
             self.fish.x = 300
@@ -122,7 +124,7 @@ class MyASGEGame(pyasge.ASGEGame):
             if isInside(self.fish, event.x, event.y):
                 self.data.score += 1 # here we add 1 to the score
                 self.scoreboard.string = str(self.data.score).zfill(6)
-                self.spawn() # now we respawn the fish to keep the game going
+                self.initFish() # now we respawn the fish to keep the game going
 
     def keyHandler(self, event: pyasge.KeyEvent) -> None:
 
@@ -156,8 +158,8 @@ class MyASGEGame(pyasge.ASGEGame):
         y = random.randint(0, self.data.game_res[1] - self.fish.height)
 
         # Move faster as the player scores more to make the game harder
-        # The maximum speed is capped at 30 using the min function
-        self.moveSpeed = min(1 + (self.data.score * 2), 30)
+        # The maximum speed is capped at 25 using the min function
+        self.moveSpeed = min(1 + (self.data.score * 1.5), 25)
         # Start moving left (0) or right (1)
         self.movementDirection = random.randrange(0, 2)
 
@@ -215,6 +217,26 @@ def fishMovement(self):
         if (self.fish.x > self.data.game_res[0] - self.fish.width):
             # Set movement direction to left
             self.movementDirection = 0
+
+def randomFishTexture(self) -> str:
+    randomNumber = random.randrange(1, 7)
+
+    if randomNumber == 1:
+        return "/data/images/kenney_fishpack/fishTile_073.png"
+    elif randomNumber == 2:
+        return "/data/images/kenney_fishpack/fishTile_075.png"
+    elif randomNumber == 3:
+        return "/data/images/kenney_fishpack/fishTile_077.png"
+    elif randomNumber == 4:
+        return "/data/images/kenney_fishpack/fishTile_079.png"
+    elif randomNumber == 5:
+        return "/data/images/kenney_fishpack/fishTile_081.png"
+    elif randomNumber == 5:
+        return "/data/images/kenney_fishpack/fishTile_091.png"
+    elif randomNumber == 6:
+        return "/data/images/kenney_fishpack/fishTile_101.png"
+    else:
+        return "/data/images/kenney_fishpack/fishTile_103.png"
 
 def main():
     """
