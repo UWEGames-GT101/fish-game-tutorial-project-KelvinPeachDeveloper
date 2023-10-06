@@ -160,8 +160,20 @@ class MyASGEGame(pyasge.ASGEGame):
         # Move faster as the player scores more to make the game harder
         # The maximum speed is capped at 25 using the min function
         self.moveSpeed = min(1 + (self.data.score * 1.5), 25)
+
         # Start moving left (0) or right (1)
         self.movementDirection = random.randrange(0, 2)
+        print(self.movementDirection)
+
+        # Make sure the fish is looking the correct way if initially flipped
+        # Moving left?
+        if self.movementDirection == 0:
+            # Face normal direction (right)
+            self.fish.flip_flags = self.fish.flip_flags.NORMAL
+        # Moving right?
+        else:
+            # Flip sprite to other direction (left)
+            self.fish.flip_flags = self.fish.flip_flags.FLIP_X
 
         self.fish.x = x
         self.fish.y = y
@@ -205,18 +217,22 @@ def fishMovement(self):
     # Should we move left?
     if self.movementDirection == 0:
         self.fish.x -= self.moveSpeed
+        self.fish.flip_flags = self.fish.flip_flags.FLIP_X
 
         # Has the fish reached the left side of the screen?
         if (self.fish.x < 0):
             self.movementDirection = 1
+            self.fish.flip_flags = self.fish.flip_flags.NORMAL
     # No? Then move right!
     else:
         self.fish.x += self.moveSpeed
+        self.fish.flip_flags = self.fish.flip_flags.NORMAL
 
         # Has the fish reached the right side of the screen?
         if (self.fish.x > self.data.game_res[0] - self.fish.width):
             # Set movement direction to left
             self.movementDirection = 0
+            self.fish.flip_flags = self.fish.flip_flags.FLIP_X
 
 def randomFishTexture(self) -> str:
     randomNumber = random.randrange(1, 7)
